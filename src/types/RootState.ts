@@ -1,3 +1,4 @@
+import { ScaraSimulation2dState } from 'app/containers/ScaraSimulation2d/slice/types';
 // [IMPORT NEW CONTAINERSTATE ABOVE] < Needed for generating containers seamlessly
 
 /* 
@@ -5,5 +6,6 @@
   You have to declare them here manually
 */
 export interface RootState {
+  scaraSimulation2d?: ScaraSimulation2dState;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly
 }
