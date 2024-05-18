@@ -119,7 +119,9 @@ function radians_to_degrees(radians) {
 export function XYToAngle(x, y, FIRST_ARM_LENGTH, SECOND_ARM_LENGTH) {
   let hypotenuse = Math.sqrt(x ** 2 + y ** 2);
   if (hypotenuse > FIRST_ARM_LENGTH + SECOND_ARM_LENGTH)
-    throw 'Cannot reach {hypotenuse}; total arm length is {FIRST_ARM_LENGTH + SECOND_ARM_LENGTH}';
+    throw new Error(
+      'Cannot reach {hypotenuse}; total arm length is {FIRST_ARM_LENGTH + SECOND_ARM_LENGTH}',
+    );
   let hypotenuse_angle = Math.asin(x / hypotenuse); // inverse sine (in radians) of a number
   let inner_angle = Math.acos(
     // inverse cosine (in radians) of a number

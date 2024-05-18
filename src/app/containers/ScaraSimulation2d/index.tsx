@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /**
  *
  * ScaraSimulation2d
@@ -6,7 +7,6 @@
 import * as React from 'react';
 import { MainContainer } from 'app/components/MainContainer';
 import {
-  canvasConfig,
   centerOriginAndFlipYAxis,
   drawCartesianPlane,
   drawAndMoveFirstArm,
