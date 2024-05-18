@@ -56,13 +56,13 @@ export function drawAndMoveFirstArm(
   OFFSET_ORIGIN_X,
   color,
 ) {
-  ctx.beginPath(); // Start a new path
+  ctx.beginPath(); // Partenza nuovo path
   ctx.moveTo(0 + OFFSET_ORIGIN_X, 0); // Origine Primo Braccio
   ctx.lineTo(FIRST_ARM_X, FIRST_ARM_Y);
   ctx.strokeStyle = color;
   ctx.lineWidth = 20;
   ctx.lineCap = 'round';
-  ctx.stroke(); // Render the path
+  ctx.stroke(); // Render del path
   ctx.closePath();
 }
 
@@ -74,7 +74,7 @@ export function drawAndMoveSecondArm(
   firstArmEndY,
   SECOND_ARM_LENGTH,
 ): { secondArmEndX: number; secondArmEndY: number } {
-  if (ctx == null) return { secondArmEndX: 0, secondArmEndY: 0 }; // context may be null
+  if (ctx == null) return { secondArmEndX: 0, secondArmEndY: 0 };
 
   // Disegna il secondo braccio (elbow)
   ctx.beginPath();
@@ -97,28 +97,23 @@ export function drawAndMoveSecondArm(
 export function drawGCodePath(
   ctx,
   path,
-  secondArmEndX,
-  secondArmEndY,
+
   DRAW_GCODE_PATH_LINE_WIDTH,
 ) {
-  // Aggiungi la posizione dell'effettore al percorso
-  path.push({ x: secondArmEndX, y: secondArmEndY });
-
-  // Disegna il percorso
-  ctx.beginPath();
   ctx.moveTo(path[0].x, path[0].y);
   for (let i = 1; i < path.length; i++) {
+    ctx.beginPath();
+    ctx.lineWidth = DRAW_GCODE_PATH_LINE_WIDTH;
+    ctx.strokeStyle = path[i].color;
+    ctx.moveTo(path[i - 1].x, path[i - 1].y);
     ctx.lineTo(path[i].x, path[i].y);
+    ctx.stroke();
   }
-  ctx.strokeStyle = 'purple';
-  ctx.lineWidth = DRAW_GCODE_PATH_LINE_WIDTH;
-  ctx.stroke();
 }
 
 function radians_to_degrees(radians) {
-  // Store the value of pi.
   var pi = Math.PI;
-  // Multiply radians by 180 divided by pi to convert to degrees.
+  // Conversione radianti in gradi
   return radians * (180 / pi);
 }
 
@@ -128,9 +123,9 @@ export function XYToAngle(x, y, FIRST_ARM_LENGTH, SECOND_ARM_LENGTH) {
     throw new Error(
       'Cannot reach {hypotenuse}; total arm length is {FIRST_ARM_LENGTH + SECOND_ARM_LENGTH}',
     );
-  let hypotenuse_angle = Math.asin(x / hypotenuse); // inverse sine (in radians) of a number
+  let hypotenuse_angle = Math.asin(x / hypotenuse); // seno inverso in radianti di un numero
   let inner_angle = Math.acos(
-    // inverse cosine (in radians) of a number
+    // coseno inverso in radianti di un numero
     (hypotenuse ** 2 + FIRST_ARM_LENGTH ** 2 - SECOND_ARM_LENGTH ** 2) /
       (2 * hypotenuse * FIRST_ARM_LENGTH),
   );
@@ -148,7 +143,7 @@ export function XYToAngle(x, y, FIRST_ARM_LENGTH, SECOND_ARM_LENGTH) {
 }
 
 export function effectorPoint(ctx, x, y, OFFSET_EFFECTOR_X) {
-  if (ctx == null) return; // context may be null
+  if (ctx == null) return;
 
   ctx.beginPath();
   ctx.arc(x - OFFSET_EFFECTOR_X, y, 1, 0, 2 * Math.PI);

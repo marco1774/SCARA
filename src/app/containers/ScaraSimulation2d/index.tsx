@@ -25,13 +25,21 @@ export function ScaraSimulation2d(props: Props) {
 
   const OFFSET_ORIGIN_X = 0;
   const OFFSET_CARTESIAN_PLANE_AXIS_Y = 0;
-  const OFFSET_EFFECTOR_X = 200; // da rendere dinamica
+  let OFFSET_EFFECTOR_X = 268; // da rendere dinamica
   const FIRST_ARM_LENGTH = 190;
-  const SECOND_ARM_LENGTH = 150;
+  const SECOND_ARM_LENGTH = 190;
   const FOOTER_ROOM = 300;
   const TOTAL_ARMS_LENGTH = FIRST_ARM_LENGTH - 1 + (SECOND_ARM_LENGTH - 1);
   const CANVAS_BG_COLOR = '#afafaf';
   const DRAW_GCODE_PATH_LINE_WIDTH = 1;
+
+  // let gcode = [
+  //   [1, 1],
+  //   [200, 1],
+  //   [200, 200],
+  //   [1, 200],
+  //   [1, 1],
+  // ];
 
   React.useEffect(() => {
     // canvas config
@@ -41,7 +49,7 @@ export function ScaraSimulation2d(props: Props) {
     canvas.style.backgroundColor = CANVAS_BG_COLOR;
     const ctx = canvas.getContext('2d');
     if (canvas == null || ctx == null) return;
-    let path = [] as { x: any; y: any }[];
+    let path = [] as { x: any; y: any; color: any }[];
     let x = 0;
     let y = 0;
 
@@ -51,7 +59,7 @@ export function ScaraSimulation2d(props: Props) {
      */
     centerOriginAndFlipYAxis(ctx, canvas, OFFSET_CARTESIAN_PLANE_AXIS_Y);
 
-    function start(ctx, x, y) {
+    function start(ctx, x, y, DRAW_GCODE_PATH_COLOR = 'purple') {
       // inverse kinematics solver
       const [tetha1, tetha2] = XYToAngle(
         x - OFFSET_EFFECTOR_X,
@@ -90,12 +98,18 @@ export function ScaraSimulation2d(props: Props) {
         SECOND_ARM_LENGTH,
       );
 
+      // Aggiungi la posizione dell'effettore al percorso
+      path.push({
+        x: secondArmEndX,
+        y: secondArmEndY,
+        color: DRAW_GCODE_PATH_COLOR,
+      });
+
       // Disegna sul canvas
       drawGCodePath(
         ctx,
         path,
-        secondArmEndX,
-        secondArmEndY,
+
         DRAW_GCODE_PATH_LINE_WIDTH,
       );
 
@@ -103,11 +117,64 @@ export function ScaraSimulation2d(props: Props) {
       effectorPoint(ctx, x, y, OFFSET_EFFECTOR_X);
     }
 
+    function maxWorkingArea(ctx, start, TOTAL_ARMS_LENGTH, OFFSET_X) {
+      OFFSET_EFFECTOR_X = 0;
+      // Disegna la semi circonferenza massima che il braccio può disegnare
+      for (let alpha = 1; alpha < 181; alpha++) {
+        start(
+          ctx,
+          Math.sin(-alpha * (Math.PI / 180)) * TOTAL_ARMS_LENGTH,
+          Math.cos(-alpha * (Math.PI / 180)) * TOTAL_ARMS_LENGTH,
+          'red',
+        );
+      }
+      for (let alpha = 180; alpha > 1; alpha--) {
+        start(
+          ctx,
+          Math.sin(alpha * (Math.PI / 180)) * TOTAL_ARMS_LENGTH,
+          Math.cos(alpha * (Math.PI / 180)) * TOTAL_ARMS_LENGTH,
+          'blue',
+        );
+      }
+      // *************************************************************
+
+      // Disegna l'area massima rettangolare inscritta nel cerchio
+      start(ctx, Math.sin(-45 * (Math.PI / 180)) * TOTAL_ARMS_LENGTH, 1);
+      start(
+        ctx,
+        Math.sin(-45 * (Math.PI / 180)) * TOTAL_ARMS_LENGTH,
+        Math.cos(-45 * (Math.PI / 180)) * TOTAL_ARMS_LENGTH,
+        'yellow',
+      );
+      start(
+        ctx,
+        Math.sin(45 * (Math.PI / 180)) * TOTAL_ARMS_LENGTH,
+        Math.cos(45 * (Math.PI / 180)) * TOTAL_ARMS_LENGTH,
+        'yellow',
+      );
+      start(
+        ctx,
+        Math.sin(45 * (Math.PI / 180)) * TOTAL_ARMS_LENGTH,
+        0,
+        'yellow',
+      );
+
+      start(
+        ctx,
+        Math.sin(-45 * (Math.PI / 180)) * TOTAL_ARMS_LENGTH,
+        0,
+        'yellow',
+      );
+      // **************************************************************
+      OFFSET_EFFECTOR_X = OFFSET_X;
+    }
+    maxWorkingArea(ctx, start, TOTAL_ARMS_LENGTH, OFFSET_EFFECTOR_X);
+
     function animate() {
       if (x >= gcode.length) {
         path = [];
       } else {
-        start(ctx, gcode[x][0], gcode[x][1]);
+        start(ctx, gcode[x][0], gcode[x][1], 'cyan');
         x++;
       }
       requestAnimationFrame(animate);
