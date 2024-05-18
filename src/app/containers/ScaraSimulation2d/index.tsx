@@ -23,8 +23,9 @@ interface Props {}
 export function ScaraSimulation2d(props: Props) {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
+  const SCALA = 2;
   const OFFSET_ORIGIN_X = 0;
-  const OFFSET_CARTESIAN_PLANE_AXIS_Y = 0;
+  const OFFSET_CARTESIAN_PLANE_AXIS_Y = 1;
   let OFFSET_EFFECTOR_X = 268; // da rendere dinamica
   const FIRST_ARM_LENGTH = 190;
   const SECOND_ARM_LENGTH = 190;
@@ -34,11 +35,10 @@ export function ScaraSimulation2d(props: Props) {
   const DRAW_GCODE_PATH_LINE_WIDTH = 1;
 
   // let gcode = [
-  //   [1, 1],
-  //   [200, 1],
-  //   [200, 200],
-  //   [1, 200],
-  //   [1, 1],
+  //   [0, 10],
+  //   [10, 10],
+  //   [10, 0],
+  //   [0, 0],
   // ];
 
   React.useEffect(() => {
@@ -52,12 +52,11 @@ export function ScaraSimulation2d(props: Props) {
     let path = [] as { x: any; y: any; color: any }[];
     let x = 0;
     let y = 0;
-
     /*
      * sposta le coordinate dell'origine al centro del canvas
      * inverte direzione asse Y
      */
-    centerOriginAndFlipYAxis(ctx, canvas, OFFSET_CARTESIAN_PLANE_AXIS_Y);
+    centerOriginAndFlipYAxis(ctx, canvas, OFFSET_CARTESIAN_PLANE_AXIS_Y, SCALA);
 
     function start(ctx, x, y, DRAW_GCODE_PATH_COLOR = 'purple') {
       // inverse kinematics solver

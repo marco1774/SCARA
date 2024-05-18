@@ -24,12 +24,13 @@ export function centerOriginAndFlipYAxis(
   ctx,
   canvas,
   OFFSET_CARTESIAN_PLANE_AXIS_Y,
+  SCALA,
 ) {
   ctx.translate(
     canvas.width / 2,
     canvas.height / 2 + OFFSET_CARTESIAN_PLANE_AXIS_Y,
   ); // sposta origine da top/sx al centro
-  ctx.scale(1, -1); // cambia orientamento asse y numeri positi verso alto
+  ctx.scale(SCALA, -SCALA); // cambia orientamento asse y numeri positi verso alto
 }
 
 export function drawCartesianPlane(ctx) {
