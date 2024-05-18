@@ -31,6 +31,7 @@ export function ScaraSimulation2d(props: Props) {
   const FOOTER_ROOM = 300;
   const TOTAL_ARMS_LENGTH = FIRST_ARM_LENGTH - 1 + (SECOND_ARM_LENGTH - 1);
   const CANVAS_BG_COLOR = '#afafaf';
+  const DRAW_GCODE_PATH_LINE_WIDTH = 1;
 
   React.useEffect(() => {
     // canvas config
@@ -90,7 +91,13 @@ export function ScaraSimulation2d(props: Props) {
       );
 
       // Disegna sul canvas
-      drawGCodePath(ctx, path, secondArmEndX, secondArmEndY);
+      drawGCodePath(
+        ctx,
+        path,
+        secondArmEndX,
+        secondArmEndY,
+        DRAW_GCODE_PATH_LINE_WIDTH,
+      );
 
       // Individua il punto effector
       effectorPoint(ctx, x, y, OFFSET_EFFECTOR_X);
@@ -100,7 +107,7 @@ export function ScaraSimulation2d(props: Props) {
       if (x >= gcode.length) {
         path = [];
       } else {
-        start(ctx, gcode[x][0] * 8 - 1100, gcode[x][1] * 8 - 1080);
+        start(ctx, gcode[x][0], gcode[x][1]);
         x++;
       }
       requestAnimationFrame(animate);

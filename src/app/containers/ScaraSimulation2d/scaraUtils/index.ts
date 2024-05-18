@@ -94,7 +94,13 @@ export function drawAndMoveSecondArm(
   };
 }
 
-export function drawGCodePath(ctx, path, secondArmEndX, secondArmEndY) {
+export function drawGCodePath(
+  ctx,
+  path,
+  secondArmEndX,
+  secondArmEndY,
+  DRAW_GCODE_PATH_LINE_WIDTH,
+) {
   // Aggiungi la posizione dell'effettore al percorso
   path.push({ x: secondArmEndX, y: secondArmEndY });
 
@@ -105,7 +111,7 @@ export function drawGCodePath(ctx, path, secondArmEndX, secondArmEndY) {
     ctx.lineTo(path[i].x, path[i].y);
   }
   ctx.strokeStyle = 'purple';
-  ctx.lineWidth = 2;
+  ctx.lineWidth = DRAW_GCODE_PATH_LINE_WIDTH;
   ctx.stroke();
 }
 
