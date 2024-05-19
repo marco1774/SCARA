@@ -23,23 +23,33 @@ interface Props {}
 export function ScaraSimulation2d(props: Props) {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
+  // Modifica la scala del canvas
   const SCALA = 2;
+  // Il braccio è ancorato all'origine 0,0, questo aggiunge un offset in X
   const OFFSET_ORIGIN_X = 0;
-  const OFFSET_CARTESIAN_PLANE_AXIS_Y = 1;
-  let OFFSET_EFFECTOR_X = 268; // da rendere dinamica
-  const FIRST_ARM_LENGTH = 190;
-  const SECOND_ARM_LENGTH = 190;
+  // L'origine del piano cartesiano 0,0 è impostato al centro del canvas, aggiunge un offset in Y
+  const OFFSET_CARTESIAN_PLANE_AXIS_Y = 300;
+  // L'origine dell'effector sarebbe 0,0 al centro dell'area di lavoro rettangolare in X,
+  // questo aggiunge un offset per portalo all'estremo
+  let OFFSET_EFFECTOR_X = 140; // da rendere dinamica
+  // Lunghezza primo braccio
+  const FIRST_ARM_LENGTH = 100;
+  // lungezza secondo braccio
+  const SECOND_ARM_LENGTH = 100;
   const FOOTER_ROOM = 300;
+  // Lunghezza totale dei due bracci
   const TOTAL_ARMS_LENGTH = FIRST_ARM_LENGTH - 1 + (SECOND_ARM_LENGTH - 1);
+  // Colore di backgraund del canvas
   const CANVAS_BG_COLOR = '#afafaf';
-  const DRAW_GCODE_PATH_LINE_WIDTH = 1;
+  // Spessore della linea di disegno del path
+  const DRAW_GCODE_PATH_LINE_WIDTH = 0.6;
 
-  // let gcode = [
-  //   [0, 10],
-  //   [10, 10],
-  //   [10, 0],
-  //   [0, 0],
-  // ];
+  let gcode = [
+    [0, 10],
+    [10, 10],
+    [10, 0],
+    [0, 0],
+  ];
 
   React.useEffect(() => {
     // canvas config
